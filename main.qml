@@ -94,10 +94,6 @@ ApplicationWindow {
                 objectName: "submitButton"
                 id: submitButton
                 text: "перевести"
-                background: Rectangle {
-                    color: "gray"
-                    radius: width / 2
-                }
 
                 onClicked: submitTextField(input.text)
             }
