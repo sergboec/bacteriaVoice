@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QDebug>
 #include <QQuickWindow>
+#include <QSettings>
 
 #include "logic.h"
 
@@ -18,7 +19,8 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    LogicClass* logic = new LogicClass();
+    QSettings settings("settings.ini",QSettings::IniFormat,nullptr);
+    LogicClass* logic = new LogicClass(&settings);
 
     QObject *topLevel = engine.rootObjects().value(0);
     QQuickWindow *window = qobject_cast<QQuickWindow *>(topLevel);

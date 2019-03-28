@@ -5,8 +5,6 @@ import QtQuick.Layouts 1.12
 import QtMultimedia 5.8
 //import QtQuick.Controls.Styles 1.4
 
-
-
 ApplicationWindow {
     signal submitTextField(string text)
     signal textDNAChanged(string text)
@@ -60,46 +58,70 @@ ApplicationWindow {
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             width: mainWidnow.width / 2
-            color: "lightgreen"
+            color: "black"
 
             TextArea{
-                visible: true
                 anchors.top: parent.top
                 anchors.left: parent.left
                 anchors.leftMargin: parent.width / 4
+                anchors.topMargin: parent.height / 6
 
                 id: input
                 width: parent.width/ 2
                 height: parent.height/ 4
                 textFormat: Text.AutoText
                 wrapMode: Text.WordWrap
-                placeholderText: "введите ваши мысли здесь"
-                anchors.topMargin: 107
+                placeholderText: "оставьте ваши мысли здесь"
                 clip: false
-                onTextChanged: textDNAChanged(text)
+
+
                 background: Rectangle {
                     border.color: "transparent"
+                    color: "lightgray"
                 }
+
+                onTextChanged: textDNAChanged(text)
+                onFocusChanged: if(focus) playMusic.stop()
             }
             RoundButton{
                 anchors.left: input.right
                 anchors.top: input.bottom
-                radius: parent.width / 5
+                anchors.leftMargin: -parent.width / 10
+                anchors.topMargin: -parent.height / 10
+                width: parent.width / 6
+                height: parent.width / 6
+                radius: width / 2
                 objectName: "submitButton"
                 id: submitButton
                 text: "перевести"
-                onClicked: {
-                    submitTextField(input.text)
+                background: Rectangle {
+                    color: "gray"
+                    radius: width / 2
                 }
 
+                onClicked: submitTextField(input.text)
             }
-//            TextArea{
-//                id: dnaOutput
-//                width: parent.width/ 2
-//                height: parent.height/ 2
-//                text: ""
-//                wrapMode: Text.Wrap
-//            }
+
+            TextArea{
+                id: dnaOutput
+                anchors.top: input.bottom
+                anchors.left: input.left
+
+                anchors.topMargin: parent.height / 10
+
+                width: parent.width/ 2
+                height: parent.height/ 4
+                textFormat: Text.AutoText
+                wrapMode: Text.WrapAnywhere
+
+                placeholderText: "тут появится dna ваших мыслей"
+
+                background: Rectangle {
+                    border.color: "transparent"
+                    color: "lightgray"
+                }
+            }
+
             Audio {
                 id: playMusic
             }

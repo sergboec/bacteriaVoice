@@ -6,6 +6,7 @@
 #include <QRegularExpression>
 #include <QUrl>
 #include <QChar>
+#include <QSettings>
 
 class Counter
 {
@@ -73,6 +74,13 @@ class LogicClass : public QObject
         {"я","TAA"},
     };
 
+public:
+    LogicClass(QSettings* settings){
+        settingPointer = settings;
+    }
+
+private:
+    QSettings* settingPointer;
 
 
 public slots:
@@ -86,12 +94,18 @@ public slots:
         Counter lonelinessCounter;
         Counter psycicCounter;
 
+        QString happynessMusicPath = settingPointer->value("happynessMusicPath").toString();
+        QString conflictMusicPath = settingPointer->value("conflictMusicPath").toString();
+        QString stressMusicPath = settingPointer->value("stressMusicPath").toString();
+        QString lonelinessMusicPath = settingPointer->value("lonelinessMusicPath").toString();
+        QString mentalMusicPath = settingPointer->value("mentalMusicPath").toString();
+
         std::vector<std::pair<std::pair<std::string,Counter*>,QSet<QString>*>> sets = {
-                                                                      {{"/home/sergey.boytsov/Documents/projects/cpp/build-bacteriaVoice-Desktop_Qt_5_13_0_GCC_64bit-Debug/overture.mp3",&hapinnessCounter},&hapinnessSet},
-                                                                      {{"conflict.wav",&conflictCounter},&conflictSet},
-                                                                      {{"stress.wav",&stressCounter},&stressSet},
-                                                                      {{"loneliness.wav",&lonelinessCounter},&lonelinessSet},
-                                                                      {{"psy.wav",&psycicCounter},&phycicSet}};
+                                                                      {{happynessMusicPath.toStdString(),&hapinnessCounter},&hapinnessSet},
+                                                                      {{conflictMusicPath.toStdString(),&conflictCounter},&conflictSet},
+                                                                      {{stressMusicPath.toStdString(),&stressCounter},&stressSet},
+                                                                      {{lonelinessMusicPath.toStdString(),&lonelinessCounter},&lonelinessSet},
+                                                                      {{mentalMusicPath.toStdString(),&psycicCounter},&phycicSet}};
 
         QString input = v.toLower();
         QStringList words = input.split(QRegularExpression(QString("\\s|\\n|\\r\\n")));
