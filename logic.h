@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QDebug>
 #include <QRegularExpression>
+#include <QUrl>
+#include <QChar>
 
 class Counter
 {
@@ -24,12 +26,60 @@ class LogicClass : public QObject
     QSet<QString> stressSet = {"стресс", "напряженность", "тревога, тревожность", "паника", "истощение", "обеспокоенность", "перенапряжение", "сонливость", "безысходность", "вялость", "тяжесть", "раздражение", "неловкость", "стресса", "стрессу", "стресс", "стрессом", "стрессе", "напряженности", "напряженности", "напряженность", "напряженностью", "напряженности", "тревоги, тревожности", "тревоге, тревожности", "тревогу, тревожность", "тревогой, тревожностью", "тревоге, тревожности", "паники", "панике", "панику", "паникой", "панике", "истощения", "истощению", "истощение", "истощением", "истощении", "обеспокоенности", "обеспокоенности", "обеспокоенность", "обеспокоенностью", "обеспокоенности", "перенапряжения", "перенапряжению", "перенапряжение", "перенапряжением", "перенапряжении", "сонливости", "сонливости", "сонливость", "сонливостью", "сонливости", "безысходности", "безысходности", "безысходность", "безысходностью", "безысходности", "вялости", "вялости", "вялость", "вялостью", "вялости", "тяжести", "тяжести", "тяжесть", "тяжестью", "тяжести", "раздражения", "раздражению", "раздражение", "раздражением", "раздражении", "неловкости", "неловкости", "неловкость", "неловкостью", "неловкости"};
     QSet<QString> lonelinessSet = {"одиночество", "отключенность", "потерянность", "печаль", "горе", "отчуждение", "апатия", "отчаяние", "одиночества", "одиночеству", "одиночество", "одиночеством", "одиночестве", "отключенности", "отключенности", "отключенность", "отключенностью", "отключенности", "потерянности", "потерянности", "потерянность", "потерянностью", "потерянности", "печали", "печали", "печаль", "печалью", "печали", "горя", "горю", "горе", "горем", "горе", "отчуждения", "отчуждению", "отчуждение", "отчуждением", "отчуждении", "апатии", "апатии", "апатию", "апатией", "апатии", "отчаяния", "отчаянию", "отчаяние", "отчаянием", "отчаянии"};
     QSet<QString> phycicSet = {"депрессия", "паранойя", "психоз", "шизофрения", "меланхолия", "истерика", "депрессии", "депрессии", "депрессию", "депрессией", "депрессии", "паранойи", "паранойе", "паранойю", "паранойей", "паранойе", "психоза", "психозу", "психоз", "психозом", "психозе", "шизофрении", "шизофрении", "шизофрению", "шизофренией", "шизофрении", "меланхолии", "меланхолии", "меланхолию", "меланхолией", "меланхолии", "истерики", "истерике", "истерику", "истерикой", "истерике"};
+    QMap<QString,QString> dnaMapping = {
+        {"0","ATA"},
+        {"1","TCT"},
+        {"2","GCG"},
+        {"3","GTG"},
+        {"4","AGA"},
+        {"5","CGC"},
+        {"6","ATT"},
+        {"7","ACC"},
+        {"8","AGG"},
+        {"9","CAA"},
+
+        {"а","ACT"},
+        {"б","CAT"},
+        {"в","TCA"},
+        {"г","TAC"},
+        {"д","CTA"},
+        {"е","GCT"},
+        {"ё","GTC"},
+        {"ж","CGT"},
+        {"з","CTG"},
+        {"и","TGC"},
+        {"й","TCG"},
+        {"к","ATC"},
+        {"л","ACA"},
+        {"м","CTC"},
+        {"н","TGT"},
+        {"о","GAG"},
+        {"п","TAT"},
+        {"р","CAC"},
+        {"с","TGA"},
+        {"т","TAG"},
+        {"у","GAT"},
+        {"ф","GTA"},
+        {"х","ATG"},
+        {"ц","AGT"},
+        {"ч","GAC"},
+        {"ш","GCA"},
+        {"щ","AGC"},
+        {"ь","ACG"},
+        {"ы","TTG"},
+        {"ъ","ACG"},
+        {"э","AAA"},
+        {"ю","TAA"},
+        {"я","TAA"},
+    };
 
 
 
 public slots:
     void cppSlot(const QString &v) {
 
+
+        //guessing emotion from text
         Counter hapinnessCounter;
         Counter conflictCounter;
         Counter stressCounter;
@@ -37,7 +87,7 @@ public slots:
         Counter psycicCounter;
 
         std::vector<std::pair<std::pair<std::string,Counter*>,QSet<QString>*>> sets = {
-                                                                      {{"hapiness.wav",&hapinnessCounter},&hapinnessSet},
+                                                                      {{"/home/sergey.boytsov/Documents/projects/cpp/build-bacteriaVoice-Desktop_Qt_5_13_0_GCC_64bit-Debug/overture.mp3",&hapinnessCounter},&hapinnessSet},
                                                                       {{"conflict.wav",&conflictCounter},&conflictSet},
                                                                       {{"stress.wav",&stressCounter},&stressSet},
                                                                       {{"loneliness.wav",&lonelinessCounter},&lonelinessSet},
@@ -77,10 +127,28 @@ public slots:
         }
 
         QString filePathToPlay = QString::fromStdString(sets[maxIndex].first.first);
-        emit setMusicTrack(filePathToPlay);
+
+        emit setMusicTrack(QUrl::fromLocalFile(filePathToPlay));
+
+        //translating text to dna
+        updateDNAText(v);
+
+    }
+    void updateDNAText(const QString &v) {
+        QString input = v.toLower();
+
+        QString result = "ATG";
+        for(auto i=0;i<input.size();i++){
+            auto val = QString(input.at(i));
+            qDebug() << "mapping dna" << val;
+            result += dnaMapping.find(val) != dnaMapping.end() ? dnaMapping.find(val).value() : "";
+        }
+        result += "TGA";
+        emit setDNAText(result);
     }
 signals:
   void setMusicTrack(QVariant text);
+  void setDNAText(QVariant text);
 };
 
 #endif // LOGIC_H

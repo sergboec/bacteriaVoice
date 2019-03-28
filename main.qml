@@ -1,58 +1,107 @@
 import QtQuick 2.9
 import QtQuick.Window 2.2
-import QtQuick.Controls 1.4
+import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.12
 import QtMultimedia 5.8
+//import QtQuick.Controls.Styles 1.4
 
-Window {
+
+
+ApplicationWindow {
     signal submitTextField(string text)
+    signal textDNAChanged(string text)
 
     id: mainWidnow
     visible: true
     width: 640
     height: 480
-    title: qsTr("Bacteria Voice")
+    title: qsTr("Resilent Ec(h)osystem")
 
-    SplitView{
+    Rectangle{
         anchors.fill: parent
-        orientation: Qt.Horizontal
 
         Rectangle{
+            anchors.left: parent.left
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
             width: mainWidnow.width / 2
-            color: "lightblue"
+
+            color: "black"
+
+            Text{
+                id:title
+                anchors.left: parent.left
+                anchors.top: parent.top
+                anchors.leftMargin: parent.width / 10
+                anchors.topMargin: parent.width / 10
+                width: parent.width / 2
+                font.family: "Helvetica"
+                font.pointSize: 16
+                text: "Resilent\nEc(h)osystem"
+                color: "white"
+            }
 
             Text {
                 id: name
                 anchors.centerIn: parent
-                text: qsTr("el texto sobre bacterias")
-            }
+                width: parent.width * 0.6
+                wrapMode: Text.WordWrap
+                font.family: "Helvetica"
+                font.pointSize: 12
+                color: "white"
+                text: qsTr("Это новый технологический микробиом, связь между бактериями, человеком и архитектурой, которая наполняет пространство упругими звуками. Он отвечает на ваши проблемы, проблемы и мысли, как это делают микроорганизмы, живущие в вашем теле.
+Когда вы записываете ситуацию, память, беспокойство или любую мысль, которую вы хотели бы освободить, она переводится в формат ДНК как простой акт общения на языке основных уровней жизни. Согласно вашему тексту, звук появится и заполнит катакомбы, и благодаря вибрационному звуку бремя вашей мысли может быть освобождено.
+Только трудные времена приносят стойкость и выносливость.")
+            }            
         }
+
         Rectangle{
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
             width: mainWidnow.width / 2
             color: "lightgreen"
-            ColumnLayout{
-                spacing: 2
-                anchors.centerIn: parent
 
-                TextArea{
-                    id: input
-                    width: parent.width/ 2
-                    height: parent.height/ 2
-                    text: ""
+            TextArea{
+                visible: true
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.leftMargin: parent.width / 4
 
+                id: input
+                width: parent.width/ 2
+                height: parent.height/ 4
+                textFormat: Text.AutoText
+                wrapMode: Text.WordWrap
+                placeholderText: "введите ваши мысли здесь"
+                anchors.topMargin: 107
+                clip: false
+                onTextChanged: textDNAChanged(text)
+                background: Rectangle {
+                    border.color: "transparent"
                 }
-                Button{
-                    objectName: "submitButton"
-                    id: submitButton
-                    text: "submit your emotions"
-                    onClicked: {
-                        submitTextField(input.text)
-                    }
+            }
+            RoundButton{
+                anchors.left: input.right
+                anchors.top: input.bottom
+                radius: parent.width / 5
+                objectName: "submitButton"
+                id: submitButton
+                text: "перевести"
+                onClicked: {
+                    submitTextField(input.text)
                 }
-                Audio {
-                    id: playMusic
-                    source: "music.wav"
-                }
+
+            }
+//            TextArea{
+//                id: dnaOutput
+//                width: parent.width/ 2
+//                height: parent.height/ 2
+//                text: ""
+//                wrapMode: Text.Wrap
+//            }
+            Audio {
+                id: playMusic
             }
         }
     }
@@ -62,5 +111,9 @@ Window {
         console.log("!set music path! = "+ musicPath)
         playMusic.source = musicPath
         playMusic.play()
+    }
+    function setOutputDNAText(text){
+        console.log("set text to smthing")
+        dnaOutput.text = text
     }
 }

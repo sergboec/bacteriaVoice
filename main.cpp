@@ -24,7 +24,10 @@ int main(int argc, char *argv[])
     QQuickWindow *window = qobject_cast<QQuickWindow *>(topLevel);
 
     QObject::connect(window, SIGNAL(submitTextField(QString)), logic, SLOT(cppSlot(QString)));
+    QObject::connect(window, SIGNAL(textDNAChanged(QString)), logic, SLOT(updateDNAText(QString)));
+
     QObject::connect(logic, SIGNAL(setMusicTrack(QVariant)), window, SLOT(setMusicTrack(QVariant)));
+    QObject::connect(logic, SIGNAL(setDNAText(QVariant)), window, SLOT(setOutputDNAText(QVariant)));
 
     return app.exec();
 }
