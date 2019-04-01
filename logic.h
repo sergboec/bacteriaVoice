@@ -7,6 +7,8 @@
 #include <QUrl>
 #include <QChar>
 #include <QSettings>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 class Counter
 {
@@ -75,16 +77,18 @@ class LogicClass : public QObject
     };
 
 public:
-    LogicClass(QSettings* settings){
+    LogicClass(QJsonDocument* settings){
         settingPointer = settings;
     }
 
 private:
-    QSettings* settingPointer;
+    QJsonDocument* settingPointer;
 
 
 public slots:
     void cppSlot(const QString &v) {
+
+
 
 
         //guessing emotion from text
@@ -94,11 +98,14 @@ public slots:
         Counter lonelinessCounter;
         Counter psycicCounter;
 
-        QString happynessMusicPath = settingPointer->value("happynessMusicPath").toString();
-        QString conflictMusicPath = settingPointer->value("conflictMusicPath").toString();
-        QString stressMusicPath = settingPointer->value("stressMusicPath").toString();
-        QString lonelinessMusicPath = settingPointer->value("lonelinessMusicPath").toString();
-        QString mentalMusicPath = settingPointer->value("mentalMusicPath").toString();
+        QJsonObject obj = settingPointer->object();
+
+        QString happynessMusicPath = obj.take("happynessMusicPath").toString();
+        QString conflictMusicPath = obj.take("conflictMusicPath").toString();
+        QString stressMusicPath = obj.take("stressMusicPath").toString();
+        QString lonelinessMusicPath = obj.take("lonelinessMusicPath").toString();
+        QString mentalMusicPath = obj.take("mentalMusicPath").toString();
+        QString defaultMusicPath = obj.take("defaultMusicPath").toString();
 
         std::vector<std::pair<std::pair<std::string,Counter*>,QSet<QString>*>> sets = {
                                                                       {{happynessMusicPath.toStdString(),&hapinnessCounter},&hapinnessSet},
@@ -128,7 +135,12 @@ public slots:
                 sets[2].first.second->get() == 0 &&
                 sets[3].first.second->get() == 0 &&
                 sets[4].first.second->get() == 0 ){
-            //todo throw "cannot parse"
+
+            emit setMusicTrack(QUrl::fromLocalFile(defaultMusicPath));
+
+            //translating text to dna
+            updateDNAText(v);
+            return;
         }
 
         size_t maxIndex = 0;
