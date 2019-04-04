@@ -89,8 +89,6 @@ public slots:
     void cppSlot(const QString &v) {
 
 
-
-
         //guessing emotion from text
         Counter hapinnessCounter;
         Counter conflictCounter;
@@ -126,8 +124,9 @@ public slots:
             }
         }
 
+        qDebug() <<"!input!newInput = |"  << input;
         foreach (auto set, sets) {
-            qDebug() << QString::fromStdString(set.first.first) << "  " << set.first.second->get();
+            qDebug() << "!debug!weight of input = " << QString::fromStdString(set.first.first) << "  " << set.first.second->get();
         }
 
         if(sets[0].first.second->get() == 0 &&
@@ -166,7 +165,6 @@ public slots:
         QString result = "ATG";
         for(auto i=0;i<input.size();i++){
             auto val = QString(input.at(i));
-            qDebug() << "mapping dna" << val;
             result += dnaMapping.find(val) != dnaMapping.end() ? dnaMapping.find(val).value() : "";
         }
         result += "TGA";
